@@ -2,12 +2,24 @@ const { Server } = require('socket.io');
 const http = require('http');
 const { v4: uuidv4 } = require('uuid');
 
-const server = http.createServer();
+const server = http.createServer((req, res) => {
+  // Health check endpoint para Render
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    return;
+  }
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Feria Ocupacional Socket Server');
+});
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    methods: ["GET", "POST"]
-  }
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ['websocket', 'polling'],
 });
 
 // Estado de las salas de juego
@@ -108,7 +120,7 @@ io.on('connection', (socket) => {
       hostId: socket.id,
       players: new Map(),
       currentQuestion: -1,
-      gameState: 'lobby', // lobby, question, answer-reveal, leaderboard, finished
+      gameState: 'lobby',
       answers: new Map(),
       questionStartTime: null,
     };
@@ -145,7 +157,6 @@ io.on('connection', (socket) => {
     room.players.set(socket.id, player);
     socket.join(roomCode.toUpperCase());
     
-    // Notificar al host del nuevo jugador
     io.to(room.hostId).emit('player-joined', {
       players: Array.from(room.players.values())
     });
@@ -215,13 +226,11 @@ io.on('connection', (socket) => {
       points
     });
     
-    // Notificar al jugador su resultado inmediato
     socket.emit('answer-result', { 
       received: true,
       answerIndex 
     });
     
-    // Notificar al host cuántos han respondido
     io.to(room.hostId).emit('answer-count', {
       count: room.answers.size,
       total: room.players.size
@@ -234,7 +243,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`👋 Usuario desconectado: ${socket.id}`);
     
-    // Buscar si era un jugador y removerlo
     for (const [roomCode, room] of gameRooms) {
       if (room.players.has(socket.id)) {
         room.players.delete(socket.id);
@@ -243,7 +251,6 @@ io.on('connection', (socket) => {
         });
       }
       
-      // Si el host se desconecta, cerrar la sala
       if (room.hostId === socket.id) {
         io.to(roomCode).emit('room-closed');
         gameRooms.delete(roomCode);
@@ -260,7 +267,6 @@ function nextQuestion(roomCode) {
   room.answers.clear();
   
   if (room.currentQuestion >= quizQuestions.length) {
-    // Juego terminado
     room.gameState = 'finished';
     const leaderboard = getLeaderboard(room);
     io.to(roomCode).emit('game-finished', { leaderboard });
@@ -271,7 +277,6 @@ function nextQuestion(roomCode) {
   room.gameState = 'question';
   room.questionStartTime = Date.now();
   
-  // Enviar pregunta a todos
   io.to(roomCode).emit('new-question', {
     questionNumber: room.currentQuestion + 1,
     totalQuestions: quizQuestions.length,
@@ -281,7 +286,6 @@ function nextQuestion(roomCode) {
     image: question.image
   });
   
-  // Timer para revelar respuesta
   setTimeout(() => {
     revealAnswer(roomCode);
   }, question.time * 1000);
@@ -294,7 +298,6 @@ function revealAnswer(roomCode) {
   room.gameState = 'answer-reveal';
   const question = quizQuestions[room.currentQuestion];
   
-  // Calcular estadísticas
   const answerCounts = [0, 0, 0, 0];
   let correctCount = 0;
   
@@ -303,7 +306,6 @@ function revealAnswer(roomCode) {
     if (answer.isCorrect) correctCount++;
   }
   
-  // Enviar resultados a jugadores
   for (const [playerId, player] of room.players) {
     const answer = room.answers.get(playerId);
     io.to(playerId).emit('answer-revealed', {
@@ -316,7 +318,6 @@ function revealAnswer(roomCode) {
     });
   }
   
-  // Enviar al host
   io.to(room.hostId).emit('answer-revealed-host', {
     correctIndex: question.correct,
     answerCounts,
