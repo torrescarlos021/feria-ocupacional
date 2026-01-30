@@ -46,7 +46,7 @@ const quizQuestions = [
   {
     id: 3,
     question: "¿Cuál de estas NO es una obra de Salvador Dalí?",
-    options: ["La persistencia de la memoria", "El gran masturbador", "Guernica", "Cisnes reflejando elefantes"],
+    options: ["La persistencia de la memoria", "La tentación de San Antonio", "Guernica", "Cisnes reflejando elefantes"],
     correct: 2,
     time: 25,
     image: "🎨"
