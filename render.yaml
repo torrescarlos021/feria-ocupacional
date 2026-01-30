@@ -26,8 +26,3 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: NEXT_PUBLIC_SOCKET_URL
-        fromService:
-          name: feria-ocupacional-backend
-          type: web
-          property: url
