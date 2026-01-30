@@ -32,7 +32,7 @@ const quizQuestions = [
     question: "¿En qué área de la ciencia destacó Albert Einstein?",
     options: ["Biología", "Física Teórica", "Química", "Matemáticas Puras"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🧠"
   },
   {
@@ -40,7 +40,7 @@ const quizQuestions = [
     question: "¿Quiénes fueron Marie y Pierre Curie?",
     options: ["Filósofos franceses", "Científicos pioneros en radioactividad", "Pintores impresionistas", "Músicos clásicos"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "⚗️"
   },
   {
@@ -48,7 +48,7 @@ const quizQuestions = [
     question: "¿Cuál de estas NO es una obra de Salvador Dalí?",
     options: ["La persistencia de la memoria", "La tentación de San Antonio", "Guernica", "Cisnes reflejando elefantes"],
     correct: 2,
-    time: 25,
+    time: 15,
     image: "🎨"
   },
   {
@@ -56,7 +56,7 @@ const quizQuestions = [
     question: "¿Qué profesión ejerció Leonardo da Vinci además de pintor?",
     options: ["Solo fue pintor", "Ingeniero e inventor", "Médico", "Abogado"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🔧"
   },
   {
@@ -64,7 +64,7 @@ const quizQuestions = [
     question: "¿En qué campo revolucionó Steve Jobs la tecnología?",
     options: ["Inteligencia Artificial", "Computación personal y dispositivos móviles", "Redes sociales", "Videojuegos"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "📱"
   },
   {
@@ -72,7 +72,7 @@ const quizQuestions = [
     question: "¿Qué descubrió Nikola Tesla?",
     options: ["La penicilina", "La corriente alterna (AC)", "El teléfono", "La vacuna contra la rabia"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "⚡"
   },
   {
@@ -80,7 +80,7 @@ const quizQuestions = [
     question: "¿Cuál fue la profesión principal de Frida Kahlo?",
     options: ["Escultora", "Arquitecta", "Pintora", "Fotógrafa"],
     correct: 2,
-    time: 15,
+    time: 10,
     image: "🖼️"
   },
   {
@@ -88,7 +88,7 @@ const quizQuestions = [
     question: "¿En qué área trabajó Florence Nightingale?",
     options: ["Astronomía", "Enfermería y estadística médica", "Literatura", "Derecho"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🏥"
   },
   {
@@ -96,7 +96,7 @@ const quizQuestions = [
     question: "¿Qué creó el arquitecto Antoni Gaudí en Barcelona?",
     options: ["El Museo del Prado", "La Sagrada Familia", "La Torre Eiffel", "El Coliseo"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🏛️"
   },
   {
@@ -104,7 +104,7 @@ const quizQuestions = [
     question: "¿En qué campo destacó Ada Lovelace?",
     options: ["Primera programadora de la historia", "Primera astronauta", "Primera médica", "Primera abogada"],
     correct: 0,
-    time: 20,
+    time: 10,
     image: "💻"
   }
 ];
