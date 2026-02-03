@@ -1,54 +1,63 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Replicate from 'replicate';
 
 export async function POST(request) {
   try {
-    const { profession } = await request.json();
+    const { image, profession } = await request.json();
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.REPLICATE_API_TOKEN) {
       return Response.json(
-        { error: 'API key de Gemini no configurada' },
+        { error: 'API token de Replicate no configurado' },
         { status: 500 }
       );
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash-exp-image-generation",
-      generationConfig: {
-        responseModalities: ["image", "text"],
-      }
+    if (!image) {
+      return Response.json(
+        { error: 'No se recibió imagen' },
+        { status: 400 }
+      );
+    }
+
+    const replicate = new Replicate({
+      auth: process.env.REPLICATE_API_TOKEN,
     });
 
     const prompts = {
-      engineer: 'ingeniero profesional con casco de seguridad en obra moderna',
-      doctor: 'médico profesional con bata blanca en hospital moderno',
-      designer: 'diseñador gráfico creativo en estudio moderno',
-      scientist: 'científico en laboratorio con equipo de investigación',
-      entrepreneur: 'empresario exitoso en oficina moderna con vista a la ciudad',
-      architect: 'arquitecto profesional con planos y maquetas',
-      programmer: 'desarrollador de software con múltiples monitores',
-      teacher: 'maestro inspirador en aula moderna',
+      engineer: 'professional engineer wearing safety helmet and vest, at modern construction site, corporate photography, confident pose',
+      doctor: 'professional doctor wearing white coat and stethoscope, in modern hospital, medical professional portrait',
+      designer: 'creative graphic designer in modern design studio, artistic professional portrait',
+      scientist: 'scientist in laboratory wearing lab coat, with research equipment, professional portrait',
+      entrepreneur: 'successful business entrepreneur in modern office, wearing professional suit, confident pose',
+      architect: 'professional architect with building blueprints, modern office, corporate portrait',
+      programmer: 'software developer at desk with multiple monitors, modern tech office, professional portrait',
+      teacher: 'inspiring teacher in modern classroom, friendly and professional appearance',
     };
 
-    const prompt = `Genera una imagen fotorrealista de alta calidad de un joven profesional mexicano como ${prompts[profession] || prompts.engineer}. Estilo: fotografía profesional corporativa, iluminación de estudio, aspecto exitoso e inspirador.`;
+    const prompt = prompts[profession] || prompts.engineer;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    
-    let generatedImage = null;
-    
-    if (response.candidates && response.candidates[0]) {
-      const parts = response.candidates[0].content.parts;
-      for (const part of parts) {
-        if (part.inlineData) {
-          generatedImage = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-          break;
+    console.log('Generating image with InstantID...');
+
+    const output = await replicate.run(
+      "zsxkib/instant-id:491ddf5be63c64e86dc48de8bb1b553cd1b93d7852a8ece2d8c4e6c0b9677d14",
+      {
+        input: {
+          image: image,
+          prompt: prompt + ", high quality, professional photography, 8k",
+          negative_prompt: "blurry, low quality, distorted face, ugly, bad anatomy",
+          num_inference_steps: 30,
+          guidance_scale: 5,
+          ip_adapter_scale: 0.8,
+          controlnet_conditioning_scale: 0.8,
         }
       }
-    }
+    );
 
-    if (!generatedImage) {
+    console.log('Output:', output);
+
+    // Replicate retorna una URL de la imagen
+    const imageUrl = Array.isArray(output) ? output[0] : output;
+
+    if (!imageUrl) {
       return Response.json(
         { error: 'No se pudo generar la imagen' },
         { status: 500 }
@@ -57,7 +66,7 @@ export async function POST(request) {
 
     return Response.json({ 
       success: true,
-      image: generatedImage
+      image: imageUrl
     });
 
   } catch (error) {
