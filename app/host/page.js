@@ -235,7 +235,7 @@ function LobbyScreen({ roomCode, players, onStart, canStart }) {
                 className="card-neon rounded-xl p-4 text-center"
               >
                 <div className="text-3xl mb-2">
-                  {['😎', '🤓', '😁', '🚀', '⭐', '🔥', '💪', '🎯'][index % 8]}
+                  {['😎', '🤓', '😁', '🙉', '⭐', '🔥', '👾', '😸'][index % 8]}
                 </div>
                 <p className="font-display font-bold text-white truncate">{player.name}</p>
               </motion.div>
@@ -589,10 +589,6 @@ function FinalScreen({ leaderboard, roomCode }) {
           ¡Ahora todos pueden hacer el <span className="text-neon-cyan font-bold">Test Vocacional</span> en sus dispositivos!
         </p>
 
-        <div className="card-neon rounded-xl p-6 inline-block">
-          <p className="text-sm text-gray-400 mb-2">Escanea o ve a</p>
-          <p className="font-display text-2xl text-neon-cyan font-bold">tudominio.com/test</p>
-        </div>
       </motion.div>
     </div>
   );

@@ -2,12 +2,24 @@ const { Server } = require('socket.io');
 const http = require('http');
 const { v4: uuidv4 } = require('uuid');
 
-const server = http.createServer();
+const server = http.createServer((req, res) => {
+  // Health check endpoint para Render
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    return;
+  }
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Feria Ocupacional Socket Server');
+});
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    methods: ["GET", "POST"]
-  }
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ['websocket', 'polling'],
 });
 
 // Estado de las salas de juego
@@ -20,7 +32,7 @@ const quizQuestions = [
     question: "¿En qué área de la ciencia destacó Albert Einstein?",
     options: ["Biología", "Física Teórica", "Química", "Matemáticas Puras"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🧠"
   },
   {
@@ -28,15 +40,15 @@ const quizQuestions = [
     question: "¿Quiénes fueron Marie y Pierre Curie?",
     options: ["Filósofos franceses", "Científicos pioneros en radioactividad", "Pintores impresionistas", "Músicos clásicos"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "⚗️"
   },
   {
     id: 3,
     question: "¿Cuál de estas NO es una obra de Salvador Dalí?",
-    options: ["La persistencia de la memoria", "El gran masturbador", "Guernica", "Cisnes reflejando elefantes"],
+    options: ["La persistencia de la memoria", "La tentación de San Antonio", "Guernica", "Cisnes reflejando elefantes"],
     correct: 2,
-    time: 25,
+    time: 15,
     image: "🎨"
   },
   {
@@ -44,7 +56,7 @@ const quizQuestions = [
     question: "¿Qué profesión ejerció Leonardo da Vinci además de pintor?",
     options: ["Solo fue pintor", "Ingeniero e inventor", "Médico", "Abogado"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🔧"
   },
   {
@@ -52,7 +64,7 @@ const quizQuestions = [
     question: "¿En qué campo revolucionó Steve Jobs la tecnología?",
     options: ["Inteligencia Artificial", "Computación personal y dispositivos móviles", "Redes sociales", "Videojuegos"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "📱"
   },
   {
@@ -60,7 +72,7 @@ const quizQuestions = [
     question: "¿Qué descubrió Nikola Tesla?",
     options: ["La penicilina", "La corriente alterna (AC)", "El teléfono", "La vacuna contra la rabia"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "⚡"
   },
   {
@@ -68,7 +80,7 @@ const quizQuestions = [
     question: "¿Cuál fue la profesión principal de Frida Kahlo?",
     options: ["Escultora", "Arquitecta", "Pintora", "Fotógrafa"],
     correct: 2,
-    time: 15,
+    time: 10,
     image: "🖼️"
   },
   {
@@ -76,7 +88,7 @@ const quizQuestions = [
     question: "¿En qué área trabajó Florence Nightingale?",
     options: ["Astronomía", "Enfermería y estadística médica", "Literatura", "Derecho"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🏥"
   },
   {
@@ -84,7 +96,7 @@ const quizQuestions = [
     question: "¿Qué creó el arquitecto Antoni Gaudí en Barcelona?",
     options: ["El Museo del Prado", "La Sagrada Familia", "La Torre Eiffel", "El Coliseo"],
     correct: 1,
-    time: 20,
+    time: 10,
     image: "🏛️"
   },
   {
@@ -92,7 +104,7 @@ const quizQuestions = [
     question: "¿En qué campo destacó Ada Lovelace?",
     options: ["Primera programadora de la historia", "Primera astronauta", "Primera médica", "Primera abogada"],
     correct: 0,
-    time: 20,
+    time: 10,
     image: "💻"
   }
 ];
@@ -108,7 +120,7 @@ io.on('connection', (socket) => {
       hostId: socket.id,
       players: new Map(),
       currentQuestion: -1,
-      gameState: 'lobby', // lobby, question, answer-reveal, leaderboard, finished
+      gameState: 'lobby',
       answers: new Map(),
       questionStartTime: null,
     };
@@ -145,7 +157,6 @@ io.on('connection', (socket) => {
     room.players.set(socket.id, player);
     socket.join(roomCode.toUpperCase());
     
-    // Notificar al host del nuevo jugador
     io.to(room.hostId).emit('player-joined', {
       players: Array.from(room.players.values())
     });
@@ -215,13 +226,11 @@ io.on('connection', (socket) => {
       points
     });
     
-    // Notificar al jugador su resultado inmediato
     socket.emit('answer-result', { 
       received: true,
       answerIndex 
     });
     
-    // Notificar al host cuántos han respondido
     io.to(room.hostId).emit('answer-count', {
       count: room.answers.size,
       total: room.players.size
@@ -234,7 +243,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`👋 Usuario desconectado: ${socket.id}`);
     
-    // Buscar si era un jugador y removerlo
     for (const [roomCode, room] of gameRooms) {
       if (room.players.has(socket.id)) {
         room.players.delete(socket.id);
@@ -243,7 +251,6 @@ io.on('connection', (socket) => {
         });
       }
       
-      // Si el host se desconecta, cerrar la sala
       if (room.hostId === socket.id) {
         io.to(roomCode).emit('room-closed');
         gameRooms.delete(roomCode);
@@ -260,7 +267,6 @@ function nextQuestion(roomCode) {
   room.answers.clear();
   
   if (room.currentQuestion >= quizQuestions.length) {
-    // Juego terminado
     room.gameState = 'finished';
     const leaderboard = getLeaderboard(room);
     io.to(roomCode).emit('game-finished', { leaderboard });
@@ -271,7 +277,6 @@ function nextQuestion(roomCode) {
   room.gameState = 'question';
   room.questionStartTime = Date.now();
   
-  // Enviar pregunta a todos
   io.to(roomCode).emit('new-question', {
     questionNumber: room.currentQuestion + 1,
     totalQuestions: quizQuestions.length,
@@ -281,7 +286,6 @@ function nextQuestion(roomCode) {
     image: question.image
   });
   
-  // Timer para revelar respuesta
   setTimeout(() => {
     revealAnswer(roomCode);
   }, question.time * 1000);
@@ -294,7 +298,6 @@ function revealAnswer(roomCode) {
   room.gameState = 'answer-reveal';
   const question = quizQuestions[room.currentQuestion];
   
-  // Calcular estadísticas
   const answerCounts = [0, 0, 0, 0];
   let correctCount = 0;
   
@@ -303,7 +306,6 @@ function revealAnswer(roomCode) {
     if (answer.isCorrect) correctCount++;
   }
   
-  // Enviar resultados a jugadores
   for (const [playerId, player] of room.players) {
     const answer = room.answers.get(playerId);
     io.to(playerId).emit('answer-revealed', {
@@ -316,7 +318,6 @@ function revealAnswer(roomCode) {
     });
   }
   
-  // Enviar al host
   io.to(room.hostId).emit('answer-revealed-host', {
     correctIndex: question.correct,
     answerCounts,
@@ -346,8 +347,8 @@ function generateRoomCode() {
   return code;
 }
 
-const PORT = process.env.SOCKET_PORT || 3001;
-server.listen(PORT, () => {
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Socket.io server running on port ${PORT}`);
 });
 

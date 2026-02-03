@@ -1,4 +1,5 @@
 services:
+  # 🟢 Backend: Configuración correcta
   - type: web
     name: feria-ocupacional-backend
     runtime: node
@@ -6,13 +7,14 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: node server.js
-    healthCheckPath: /health
+    healthCheckPath: /health # ✅ Esto coincide perfecto con tu server.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
 
+  # 🟠 Frontend: Faltaba la conexión al socket
   - type: web
     name: feria-ocupacional-frontend
     runtime: node
@@ -24,5 +26,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NEXT_PUBLIC_SOCKET_URL # ⚠️ IMPORTANTE: Agrega esto
+        fromService:
+          type: web
+          name: feria-ocupacional-backend
+          property: url
       - key: PORT
         value: 10000
