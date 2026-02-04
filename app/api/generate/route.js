@@ -1,5 +1,46 @@
 import Replicate from 'replicate';
 
+// Banco de imágenes de profesionales con caras frontales claras
+const professionalImages = {
+  engineer: [
+    "https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=800",
+    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800",
+  ],
+  doctor: [
+    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800",
+    "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800",
+  ],
+  designer: [
+    "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800",
+    "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=800",
+  ],
+  scientist: [
+    "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800",
+    "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800",
+  ],
+  entrepreneur: [
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800",
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800",
+  ],
+  architect: [
+    "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800",
+    "https://images.unsplash.com/photo-1574359411659-15573a27fd0c?w=800",
+  ],
+  programmer: [
+    "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=800",
+    "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?w=800",
+  ],
+  teacher: [
+    "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800",
+    "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800",
+  ],
+};
+
+function getRandomImage(profession) {
+  const images = professionalImages[profession] || professionalImages.engineer;
+  return images[Math.floor(Math.random() * images.length)];
+}
+
 export async function POST(request) {
   try {
     const { image, profession } = await request.json();
@@ -22,42 +63,25 @@ export async function POST(request) {
       auth: process.env.REPLICATE_API_TOKEN,
     });
 
-    const prompts = {
-      engineer: 'professional engineer wearing safety helmet and vest, at modern construction site, corporate photography, confident pose',
-      doctor: 'professional doctor wearing white coat and stethoscope, in modern hospital, medical professional portrait',
-      designer: 'creative graphic designer in modern design studio, artistic professional portrait',
-      scientist: 'scientist in laboratory wearing lab coat, with research equipment, professional portrait',
-      entrepreneur: 'successful business entrepreneur in modern office, wearing professional suit, confident pose',
-      architect: 'professional architect with building blueprints, modern office, corporate portrait',
-      programmer: 'software developer at desk with multiple monitors, modern tech office, professional portrait',
-      teacher: 'inspiring teacher in modern classroom, friendly and professional appearance',
-    };
+    const targetImage = getRandomImage(profession);
 
-    const prompt = prompts[profession] || prompts.engineer;
+    console.log('🎯 Profession:', profession);
+    console.log('🖼️ Target image:', targetImage);
 
-    console.log('Generating image with InstantID...');
-
+    // Face-swap: poner cara del usuario en imagen de profesional
     const output = await replicate.run(
-      "zsxkib/instant-id:491ddf5be63c64e86dc48de8bb1b553cd1b93d7852a8ece2d8c4e6c0b9677d14",
+      "codeplugtech/face-swap",
       {
         input: {
-          image: image,
-          prompt: prompt + ", high quality, professional photography, 8k",
-          negative_prompt: "blurry, low quality, distorted face, ugly, bad anatomy",
-          num_inference_steps: 30,
-          guidance_scale: 5,
-          ip_adapter_scale: 0.8,
-          controlnet_conditioning_scale: 0.8,
+          input_image: targetImage,  // Imagen del profesional
+          swap_image: image,         // Selfie del usuario
         }
       }
     );
 
-    console.log('Output:', output);
+    console.log('✅ Output:', output);
 
-    // Replicate retorna una URL de la imagen
-    const imageUrl = Array.isArray(output) ? output[0] : output;
-
-    if (!imageUrl) {
+    if (!output) {
       return Response.json(
         { error: 'No se pudo generar la imagen' },
         { status: 500 }
@@ -66,11 +90,11 @@ export async function POST(request) {
 
     return Response.json({ 
       success: true,
-      image: imageUrl
+      image: output
     });
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
     return Response.json(
       { error: 'Error al generar imagen: ' + error.message },
       { status: 500 }
