@@ -1,6 +1,6 @@
 {
   "name": "feria-ocupacional",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Plataforma interactiva para la Feria de Salud y Bienestar - Esfera Ocupacional",
   "scripts": {
     "dev": "next dev",
@@ -10,23 +10,21 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "autoprefixer": "^10.4.17",
     "canvas-confetti": "^1.9.2",
     "framer-motion": "^11.0.0",
     "next": "^14.1.0",
-    "postcss": "^8.4.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "replicate": "^0.25.2",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
-    "tailwindcss": "^3.4.1",
     "uuid": "^9.0.1",
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
   },
   "engines": {
     "node": ">=18.0.0"
