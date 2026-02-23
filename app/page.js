@@ -57,20 +57,11 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between max-w-7xl mx-auto"
+          className="flex items-center justify-center max-w-7xl mx-auto"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-magenta flex items-center justify-center">
-              <span className="text-2xl">🎯</span>
-            </div>
-            <div>
-              <h2 className="font-display text-lg font-bold text-neon-cyan">CVDP</h2>
-              <p className="text-xs text-gray-400">Tec de Monterrey SLP</p>
-            </div>
-          </div>
-          <div className="text-right">
+          <div className="text-center">
             <p className="text-sm text-gray-400">Feria de Salud y Bienestar</p>
-            <p className="font-display text-neon-magenta font-bold">ESFERA OCUPACIONAL</p>
+            <p className="font-display text-neon-magenta font-bold text-xl">ESFERA OCUPACIONAL</p>
           </div>
         </motion.div>
       </header>
@@ -109,7 +100,7 @@ export default function Home() {
             transition={{ delay: 0.4 }}
             className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-12"
           >
-            Compite, descubre y visualiza tu futuro profesional en una experiencia interactiva única
+            Compite, descubre y visualiza tu futuro profesional en una experiencia interactiva
           </motion.p>
 
           {/* CTA Buttons */}
@@ -156,7 +147,7 @@ export default function Home() {
           {[
             { icon: '🧠', title: 'Quiz en Vivo', desc: 'Compite con tus compañeros en tiempo real', color: 'cyan' },
             { icon: '🎯', title: 'Test Vocacional', desc: 'Descubre las carreras que van contigo', color: 'magenta' },
-            { icon: '🖼️', title: 'Tu Futuro en IA', desc: 'Visualízate como profesional con IA', color: 'yellow' },
+            { icon: '🖼️', title: 'Marco Profesional', desc: 'Obtén tu foto con marco de carrera', color: 'yellow' },
           ].map((feature, i) => (
             <motion.div
               key={i}
