@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -8,600 +8,133 @@ const professions = [
   { 
     id: 'mechatronics', 
     name: 'Ing. Mecatrónico/a', 
-    emoji: '🤖',
-    frameColor: '#00f5ff',
-    secondaryColor: '#0066ff',
-    icon: '⚙️',
     tagline: 'Robótica • Automatización • Innovación',
-    pattern: 'circuits', // circuitos y engranajes
+    frameColor: '#00f5ff',
+    bgImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
   },
   { 
     id: 'systems', 
     name: 'Ing. en Sistemas', 
-    emoji: '💻',
-    frameColor: '#00ff88',
-    secondaryColor: '#00aa55',
-    icon: '🖥️',
     tagline: 'Código • Software • Tecnología',
-    pattern: 'code', // código binario
+    frameColor: '#00ff88',
+    bgImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80',
   },
   { 
     id: 'civil', 
     name: 'Ing. Civil', 
-    emoji: '🏗️',
-    frameColor: '#ff9500',
-    secondaryColor: '#cc7700',
-    icon: '🌉',
     tagline: 'Construcción • Infraestructura • Diseño',
-    pattern: 'blueprint', // planos
+    frameColor: '#ff9500',
+    bgImage: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80',
   },
   { 
     id: 'industrial', 
     name: 'Ing. Industrial', 
-    emoji: '🏭',
-    frameColor: '#ffcc00',
-    secondaryColor: '#aa8800',
-    icon: '📊',
     tagline: 'Procesos • Optimización • Calidad',
-    pattern: 'gears', // engranajes
+    frameColor: '#ffcc00',
+    bgImage: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&q=80',
   },
   { 
     id: 'doctor', 
     name: 'Médico/a', 
-    emoji: '👨‍⚕️',
-    frameColor: '#39ff14',
-    secondaryColor: '#00cc00',
-    icon: '🩺',
     tagline: 'Salud • Vida • Bienestar',
-    pattern: 'medical', // cruz médica y pulso
+    frameColor: '#39ff14',
+    bgImage: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
   },
   { 
     id: 'nurse', 
     name: 'Enfermero/a', 
-    emoji: '👩‍⚕️',
-    frameColor: '#ff69b4',
-    secondaryColor: '#cc5599',
-    icon: '💉',
     tagline: 'Cuidado • Atención • Servicio',
-    pattern: 'medical',
+    frameColor: '#ff69b4',
+    bgImage: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=800&q=80',
   },
   { 
     id: 'psychologist', 
     name: 'Psicólogo/a', 
-    emoji: '🧠',
-    frameColor: '#9966ff',
-    secondaryColor: '#7744cc',
-    icon: '💭',
     tagline: 'Mente • Bienestar • Comprensión',
-    pattern: 'mind', // ondas cerebrales
+    frameColor: '#9966ff',
+    bgImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
   },
   { 
     id: 'lawyer', 
     name: 'Abogado/a', 
-    emoji: '⚖️',
-    frameColor: '#c9a227',
-    secondaryColor: '#997711',
-    icon: '📜',
     tagline: 'Justicia • Derecho • Defensa',
-    pattern: 'legal', // balanza y columnas
+    frameColor: '#c9a227',
+    bgImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80',
   },
   { 
     id: 'architect', 
     name: 'Arquitecto/a', 
-    emoji: '🏛️',
-    frameColor: '#bf00ff',
-    secondaryColor: '#9900cc',
-    icon: '📐',
     tagline: 'Espacios • Diseño • Creatividad',
-    pattern: 'architecture', // líneas de planos
+    frameColor: '#bf00ff',
+    bgImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80',
   },
   { 
     id: 'designer', 
     name: 'Diseñador/a Gráfico', 
-    emoji: '🎨',
-    frameColor: '#ff00ff',
-    secondaryColor: '#cc00cc',
-    icon: '✏️',
     tagline: 'Arte • Visual • Comunicación',
-    pattern: 'creative', // formas geométricas
+    frameColor: '#ff00ff',
+    bgImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80',
   },
   { 
     id: 'accountant', 
     name: 'Contador/a', 
-    emoji: '📊',
-    frameColor: '#2196f3',
-    secondaryColor: '#1976d2',
-    icon: '💰',
     tagline: 'Finanzas • Números • Estrategia',
-    pattern: 'finance', // gráficas y números
+    frameColor: '#2196f3',
+    bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
   },
   { 
     id: 'business', 
     name: 'Administrador/a', 
-    emoji: '💼',
-    frameColor: '#ff6b35',
-    secondaryColor: '#cc5522',
-    icon: '📈',
     tagline: 'Liderazgo • Gestión • Negocios',
-    pattern: 'business', // gráficas ascendentes
+    frameColor: '#ff6b35',
+    bgImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
   },
   { 
     id: 'marketing', 
     name: 'Mercadólogo/a', 
-    emoji: '📢',
-    frameColor: '#e91e63',
-    secondaryColor: '#c2185b',
-    icon: '🎯',
     tagline: 'Marcas • Estrategia • Impacto',
-    pattern: 'marketing', // targets y flechas
+    frameColor: '#e91e63',
+    bgImage: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=80',
   },
   { 
     id: 'chef', 
     name: 'Chef / Gastrónomo', 
-    emoji: '👨‍🍳',
-    frameColor: '#ff5722',
-    secondaryColor: '#e64a19',
-    icon: '🍽️',
     tagline: 'Sabor • Creatividad • Pasión',
-    pattern: 'culinary', // utensilios
+    frameColor: '#ff5722',
+    bgImage: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80',
   },
   { 
     id: 'teacher', 
     name: 'Docente', 
-    emoji: '📚',
-    frameColor: '#4caf50',
-    secondaryColor: '#388e3c',
-    icon: '🎓',
     tagline: 'Educación • Inspiración • Futuro',
-    pattern: 'education', // libros y estrellas
+    frameColor: '#4caf50',
+    bgImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
   },
   { 
     id: 'vet', 
     name: 'Veterinario/a', 
-    emoji: '🐾',
-    frameColor: '#8bc34a',
-    secondaryColor: '#689f38',
-    icon: '🐕',
     tagline: 'Animales • Salud • Cuidado',
-    pattern: 'vet', // huellas y corazones
+    frameColor: '#8bc34a',
+    bgImage: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=800&q=80',
   },
 ];
-
-// Función para dibujar patrones específicos de cada carrera
-function drawPattern(ctx, pattern, color, secondaryColor, size) {
-  ctx.globalAlpha = 0.08;
-  
-  switch(pattern) {
-    case 'circuits':
-      // Circuitos y conexiones
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      for (let i = 0; i < 8; i++) {
-        const x = Math.random() * size;
-        const y = Math.random() * size;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + 30, y);
-        ctx.lineTo(x + 30, y + 20);
-        ctx.stroke();
-        // Nodos
-        ctx.beginPath();
-        ctx.arc(x + 30, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-      }
-      // Engranajes pequeños
-      for (let i = 0; i < 4; i++) {
-        drawGear(ctx, 50 + i * 150, 50 + (i % 2) * 450, 20, color);
-      }
-      break;
-      
-    case 'code':
-      // Código binario
-      ctx.fillStyle = color;
-      ctx.font = '14px monospace';
-      for (let i = 0; i < 15; i++) {
-        const x = (i % 5) * 120 + 20;
-        const y = Math.floor(i / 5) * 200 + 50;
-        const binary = Math.random() > 0.5 ? '01101' : '10010';
-        ctx.fillText(binary, x, y);
-      }
-      // Corchetes de código
-      ctx.font = '24px monospace';
-      ctx.fillText('{ }', 30, 100);
-      ctx.fillText('< />', size - 80, size - 50);
-      break;
-      
-    case 'blueprint':
-      // Líneas de plano arquitectónico
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
-      for (let i = 0; i < size; i += 40) {
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, size);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(size, i);
-        ctx.stroke();
-      }
-      ctx.setLineDash([]);
-      // Marcas de cota
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(50, 50);
-      ctx.lineTo(200, 50);
-      ctx.moveTo(50, 45);
-      ctx.lineTo(50, 55);
-      ctx.moveTo(200, 45);
-      ctx.lineTo(200, 55);
-      ctx.stroke();
-      break;
-      
-    case 'gears':
-      // Engranajes industriales
-      drawGear(ctx, 80, 80, 35, color);
-      drawGear(ctx, size - 80, 100, 25, color);
-      drawGear(ctx, 100, size - 100, 30, color);
-      drawGear(ctx, size - 100, size - 80, 40, color);
-      break;
-      
-    case 'medical':
-      // Cruces médicas y línea de pulso
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 3;
-      // Cruz
-      drawCross(ctx, 60, 60, 25, color);
-      drawCross(ctx, size - 60, size - 80, 20, color);
-      // Línea de pulso ECG
-      ctx.beginPath();
-      ctx.moveTo(20, size / 2);
-      ctx.lineTo(80, size / 2);
-      ctx.lineTo(100, size / 2 - 30);
-      ctx.lineTo(120, size / 2 + 20);
-      ctx.lineTo(140, size / 2);
-      ctx.lineTo(200, size / 2);
-      ctx.stroke();
-      break;
-      
-    case 'mind':
-      // Ondas cerebrales
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      for (let wave = 0; wave < 3; wave++) {
-        ctx.beginPath();
-        for (let x = 0; x < size; x += 5) {
-          const y = 80 + wave * 180 + Math.sin(x * 0.05) * 15;
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-      // Burbujas de pensamiento
-      ctx.beginPath();
-      ctx.arc(size - 80, 80, 20, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(size - 50, 60, 10, 0, Math.PI * 2);
-      ctx.stroke();
-      break;
-      
-    case 'legal':
-      // Balanza de justicia estilizada
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 3;
-      // Poste central
-      ctx.beginPath();
-      ctx.moveTo(size / 2, 40);
-      ctx.lineTo(size / 2, 120);
-      ctx.stroke();
-      // Brazos
-      ctx.beginPath();
-      ctx.moveTo(size / 2 - 60, 50);
-      ctx.lineTo(size / 2 + 60, 50);
-      ctx.stroke();
-      // Platos
-      ctx.beginPath();
-      ctx.arc(size / 2 - 60, 70, 15, 0, Math.PI);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(size / 2 + 60, 70, 15, 0, Math.PI);
-      ctx.stroke();
-      // Columnas en esquinas
-      drawColumn(ctx, 40, size - 120, color);
-      drawColumn(ctx, size - 55, size - 120, color);
-      break;
-      
-    case 'architecture':
-      // Líneas de perspectiva
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
-      const vanishX = size / 2;
-      const vanishY = size / 3;
-      for (let i = 0; i < 8; i++) {
-        ctx.beginPath();
-        ctx.moveTo(vanishX, vanishY);
-        ctx.lineTo(i * (size / 7), size);
-        ctx.stroke();
-      }
-      // Cuadrícula
-      ctx.strokeStyle = secondaryColor;
-      ctx.setLineDash([3, 6]);
-      for (let i = 50; i < 200; i += 30) {
-        ctx.strokeRect(size - 180, size - i - 50, 120, 40);
-      }
-      ctx.setLineDash([]);
-      break;
-      
-    case 'creative':
-      // Formas geométricas coloridas
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      // Triángulo
-      ctx.beginPath();
-      ctx.moveTo(60, 100);
-      ctx.lineTo(100, 40);
-      ctx.lineTo(140, 100);
-      ctx.closePath();
-      ctx.stroke();
-      // Círculo
-      ctx.beginPath();
-      ctx.arc(size - 80, 80, 30, 0, Math.PI * 2);
-      ctx.stroke();
-      // Cuadrado
-      ctx.strokeRect(40, size - 120, 50, 50);
-      // Líneas dinámicas
-      ctx.beginPath();
-      ctx.moveTo(size - 150, size - 40);
-      ctx.bezierCurveTo(size - 100, size - 100, size - 50, size - 80, size - 30, size - 120);
-      ctx.stroke();
-      break;
-      
-    case 'finance':
-      // Gráfica de barras
-      ctx.fillStyle = color;
-      const barWidth = 20;
-      const heights = [40, 70, 55, 90, 65];
-      heights.forEach((h, i) => {
-        ctx.fillRect(40 + i * 35, size - 80 - h, barWidth, h);
-      });
-      // Línea de tendencia
-      ctx.strokeStyle = secondaryColor;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(40, size - 100);
-      ctx.lineTo(size - 40, size - 160);
-      ctx.stroke();
-      // Símbolo $
-      ctx.font = 'bold 40px Arial';
-      ctx.fillText('$', size - 80, 80);
-      break;
-      
-    case 'business':
-      // Gráfica ascendente
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(50, size - 80);
-      ctx.lineTo(100, size - 120);
-      ctx.lineTo(150, size - 100);
-      ctx.lineTo(200, size - 160);
-      ctx.stroke();
-      // Flecha hacia arriba
-      ctx.beginPath();
-      ctx.moveTo(200, size - 160);
-      ctx.lineTo(190, size - 145);
-      ctx.moveTo(200, size - 160);
-      ctx.lineTo(210, size - 150);
-      ctx.stroke();
-      // Maletín estilizado
-      ctx.strokeRect(size - 120, 50, 60, 45);
-      ctx.beginPath();
-      ctx.moveTo(size - 100, 50);
-      ctx.lineTo(size - 100, 40);
-      ctx.lineTo(size - 80, 40);
-      ctx.lineTo(size - 80, 50);
-      ctx.stroke();
-      break;
-      
-    case 'marketing':
-      // Target/Diana
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(100, 100, 40, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(100, 100, 25, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(100, 100, 10, 0, Math.PI * 2);
-      ctx.fill();
-      // Megáfono estilizado
-      ctx.beginPath();
-      ctx.moveTo(size - 120, size - 100);
-      ctx.lineTo(size - 60, size - 130);
-      ctx.lineTo(size - 60, size - 70);
-      ctx.closePath();
-      ctx.stroke();
-      break;
-      
-    case 'culinary':
-      // Utensilios de cocina
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 3;
-      // Cuchillo
-      ctx.beginPath();
-      ctx.moveTo(60, 60);
-      ctx.lineTo(60, 120);
-      ctx.lineTo(70, 125);
-      ctx.lineTo(70, 60);
-      ctx.stroke();
-      // Tenedor
-      ctx.beginPath();
-      ctx.moveTo(size - 80, 60);
-      ctx.lineTo(size - 80, 90);
-      ctx.moveTo(size - 90, 60);
-      ctx.lineTo(size - 90, 85);
-      ctx.moveTo(size - 70, 60);
-      ctx.lineTo(size - 70, 85);
-      ctx.moveTo(size - 95, 90);
-      ctx.lineTo(size - 65, 90);
-      ctx.lineTo(size - 80, 130);
-      ctx.stroke();
-      // Gorro de chef estilizado
-      ctx.beginPath();
-      ctx.arc(size / 2, size - 80, 30, Math.PI, 0);
-      ctx.stroke();
-      break;
-      
-    case 'education':
-      // Libros apilados
-      ctx.fillStyle = color;
-      ctx.fillRect(40, size - 120, 60, 15);
-      ctx.fillRect(45, size - 140, 55, 15);
-      ctx.fillRect(42, size - 158, 58, 15);
-      // Birrete
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(size - 120, 80);
-      ctx.lineTo(size - 80, 60);
-      ctx.lineTo(size - 40, 80);
-      ctx.lineTo(size - 80, 100);
-      ctx.closePath();
-      ctx.stroke();
-      // Borla
-      ctx.beginPath();
-      ctx.moveTo(size - 80, 60);
-      ctx.lineTo(size - 80, 40);
-      ctx.lineTo(size - 60, 45);
-      ctx.stroke();
-      // Estrellas
-      drawStar(ctx, 80, 80, 15, color);
-      drawStar(ctx, size - 60, size - 60, 12, color);
-      break;
-      
-    case 'vet':
-      // Huellas de animal
-      ctx.fillStyle = color;
-      drawPaw(ctx, 70, 70, 20);
-      drawPaw(ctx, size - 90, 90, 15);
-      drawPaw(ctx, 90, size - 100, 18);
-      drawPaw(ctx, size - 70, size - 70, 22);
-      // Corazón
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      drawHeart(ctx, size / 2, 70, 25);
-      break;
-      
-    default:
-      // Patrón genérico de grid
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
-      for (let i = 0; i < size; i += 30) {
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, size);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(size, i);
-        ctx.stroke();
-      }
-  }
-  
-  ctx.globalAlpha = 1;
-}
-
-// Funciones auxiliares para dibujar elementos
-function drawGear(ctx, x, y, radius, color) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(x, y, radius * 0.4, 0, Math.PI * 2);
-  ctx.stroke();
-  // Dientes
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
-    ctx.lineTo(x + Math.cos(angle) * (radius + 8), y + Math.sin(angle) * (radius + 8));
-    ctx.stroke();
-  }
-}
-
-function drawCross(ctx, x, y, size, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(x - size/6, y - size/2, size/3, size);
-  ctx.fillRect(x - size/2, y - size/6, size, size/3);
-}
-
-function drawColumn(ctx, x, y, color) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  // Base
-  ctx.fillRect(x - 5, y + 70, 25, 8);
-  // Columna
-  ctx.fillRect(x, y + 10, 15, 60);
-  // Capitel
-  ctx.fillRect(x - 5, y, 25, 12);
-}
-
-function drawStar(ctx, x, y, radius, color) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  for (let i = 0; i < 5; i++) {
-    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-    const px = x + Math.cos(angle) * radius;
-    const py = y + Math.sin(angle) * radius;
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
-  }
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawPaw(ctx, x, y, size) {
-  // Almohadilla principal
-  ctx.beginPath();
-  ctx.ellipse(x, y + size/2, size/2, size/3, 0, 0, Math.PI * 2);
-  ctx.fill();
-  // Dedos
-  const toePositions = [
-    { dx: -size/2, dy: -size/4 },
-    { dx: -size/6, dy: -size/2 },
-    { dx: size/6, dy: -size/2 },
-    { dx: size/2, dy: -size/4 },
-  ];
-  toePositions.forEach(pos => {
-    ctx.beginPath();
-    ctx.arc(x + pos.dx, y + pos.dy, size/5, 0, Math.PI * 2);
-    ctx.fill();
-  });
-}
-
-function drawHeart(ctx, x, y, size) {
-  ctx.beginPath();
-  ctx.moveTo(x, y + size/4);
-  ctx.bezierCurveTo(x, y, x - size/2, y, x - size/2, y + size/4);
-  ctx.bezierCurveTo(x - size/2, y + size/2, x, y + size * 0.75, x, y + size);
-  ctx.bezierCurveTo(x, y + size * 0.75, x + size/2, y + size/2, x + size/2, y + size/4);
-  ctx.bezierCurveTo(x + size/2, y, x, y, x, y + size/4);
-  ctx.stroke();
-}
 
 export default function ResultsPage() {
   const [step, setStep] = useState('upload');
   const [uploadedImage, setUploadedImage] = useState(null);
   const [selectedProfession, setSelectedProfession] = useState(null);
+  const [bgImageLoaded, setBgImageLoaded] = useState(null);
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (selectedProfession) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => setBgImageLoaded(img);
+      img.src = selectedProfession.bgImage;
+    }
+  }, [selectedProfession]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -621,7 +154,7 @@ export default function ResultsPage() {
     
     setTimeout(() => {
       setStep('result');
-    }, 1200);
+    }, 1500);
   };
 
   const downloadImage = async () => {
@@ -629,193 +162,171 @@ export default function ResultsPage() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    const img = new Image();
+    const userImg = new Image();
+    const bgImg = new Image();
+    bgImg.crossOrigin = 'anonymous';
     
-    img.onload = () => {
+    const loadImage = (img, src) => new Promise((resolve, reject) => {
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+
+    try {
+      await Promise.all([
+        loadImage(userImg, uploadedImage),
+        loadImage(bgImg, selectedProfession.bgImage)
+      ]);
+
       const size = 600;
       canvas.width = size;
       canvas.height = size;
 
-      // Fondo oscuro con gradiente usando colores de la profesión
-      const gradient = ctx.createLinearGradient(0, 0, size, size);
-      gradient.addColorStop(0, '#0a0a0f');
-      gradient.addColorStop(0.5, '#12121a');
-      gradient.addColorStop(1, '#0a0a0f');
-      ctx.fillStyle = gradient;
+      // 1. Imagen de fondo
+      const bgScale = Math.max(size / bgImg.width, size / bgImg.height);
+      const bgWidth = bgImg.width * bgScale;
+      const bgHeight = bgImg.height * bgScale;
+      const bgX = (size - bgWidth) / 2;
+      const bgY = (size - bgHeight) / 2;
+      ctx.drawImage(bgImg, bgX, bgY, bgWidth, bgHeight);
+
+      // 2. Overlay oscuro
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
       ctx.fillRect(0, 0, size, size);
 
-      // Dibujar patrón específico de la profesión
-      drawPattern(ctx, selectedProfession.pattern, selectedProfession.frameColor, selectedProfession.secondaryColor, size);
-
-      // Marco exterior principal con doble línea
+      // 3. Borde exterior
       ctx.strokeStyle = selectedProfession.frameColor;
-      ctx.lineWidth = 4;
-      ctx.strokeRect(12, 12, size - 24, size - 24);
-      
-      ctx.strokeStyle = selectedProfession.secondaryColor;
+      ctx.lineWidth = 8;
+      ctx.strokeRect(8, 8, size - 16, size - 16);
+
+      // 4. Línea interior
+      ctx.strokeStyle = selectedProfession.frameColor + '60';
       ctx.lineWidth = 2;
       ctx.strokeRect(20, 20, size - 40, size - 40);
 
-      // Barra superior con título de profesión
-      const barGradient = ctx.createLinearGradient(30, 30, size - 30, 30);
-      barGradient.addColorStop(0, selectedProfession.frameColor + '40');
-      barGradient.addColorStop(0.5, selectedProfession.frameColor + '60');
-      barGradient.addColorStop(1, selectedProfession.frameColor + '40');
+      // 5. Barra superior
+      const barHeight = 60;
+      const barGradient = ctx.createLinearGradient(0, 25, 0, 25 + barHeight);
+      barGradient.addColorStop(0, 'rgba(0,0,0,0.9)');
+      barGradient.addColorStop(1, 'rgba(0,0,0,0.7)');
       ctx.fillStyle = barGradient;
-      ctx.fillRect(30, 30, size - 60, 50);
+      ctx.fillRect(25, 25, size - 50, barHeight);
       
       ctx.strokeStyle = selectedProfession.frameColor;
       ctx.lineWidth = 2;
-      ctx.strokeRect(30, 30, size - 60, 50);
+      ctx.strokeRect(25, 25, size - 50, barHeight);
 
-      // Texto en barra superior
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 22px Arial';
+      ctx.font = 'bold 24px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(`FUTURO/A ${selectedProfession.name.toUpperCase()}`, size / 2, 62);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`FUTURO/A ${selectedProfession.name.toUpperCase()}`, size / 2, 55);
 
-      // Área de la foto (circular)
+      // 6. Foto del usuario
       const centerX = size / 2;
-      const centerY = size / 2 + 10;
-      const radius = 150;
+      const centerY = size / 2 + 15;
+      const radius = 140;
 
-      // Anillos decorativos alrededor de la foto
-      ctx.strokeStyle = selectedProfession.frameColor + '30';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius + 35, 0, Math.PI * 2);
-      ctx.stroke();
-      
-      ctx.setLineDash([10, 5]);
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius + 25, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Glow effect
-      const glowGradient = ctx.createRadialGradient(centerX, centerY, radius - 20, centerX, centerY, radius + 30);
-      glowGradient.addColorStop(0, selectedProfession.frameColor + '30');
+      // Glow
+      const glowGradient = ctx.createRadialGradient(centerX, centerY, radius * 0.8, centerX, centerY, radius * 1.3);
+      glowGradient.addColorStop(0, selectedProfession.frameColor + '50');
       glowGradient.addColorStop(1, 'transparent');
       ctx.fillStyle = glowGradient;
       ctx.beginPath();
-      ctx.arc(centerX, centerY, radius + 30, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, radius * 1.3, 0, Math.PI * 2);
       ctx.fill();
 
-      // Borde de la foto
+      // Borde foto
       ctx.beginPath();
-      ctx.arc(centerX, centerY, radius + 5, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, radius + 6, 0, Math.PI * 2);
       ctx.strokeStyle = selectedProfession.frameColor;
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 5;
       ctx.stroke();
 
-      // Clip circular para la imagen
+      // Clip y dibujar foto
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
       ctx.clip();
 
-      // Dibujar imagen del usuario
       const imgSize = radius * 2;
-      const scale = Math.max(imgSize / img.width, imgSize / img.height);
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
+      const scale = Math.max(imgSize / userImg.width, imgSize / userImg.height);
+      const scaledWidth = userImg.width * scale;
+      const scaledHeight = userImg.height * scale;
       const offsetX = centerX - scaledWidth / 2;
       const offsetY = centerY - scaledHeight / 2;
       
-      ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+      ctx.drawImage(userImg, offsetX, offsetY, scaledWidth, scaledHeight);
       ctx.restore();
 
-      // Emoji de profesión en esquina de foto
-      ctx.font = '45px Arial';
-      ctx.fillText(selectedProfession.emoji, centerX + radius - 20, centerY + radius - 10);
-
-      // Caja inferior con tagline
-      const boxY = size - 115;
-      const boxHeight = 75;
+      // 7. Caja inferior
+      const boxY = size - 100;
+      const boxHeight = 70;
       
       const boxGradient = ctx.createLinearGradient(0, boxY, 0, boxY + boxHeight);
-      boxGradient.addColorStop(0, 'rgba(0, 0, 0, 0.95)');
-      boxGradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+      boxGradient.addColorStop(0, 'rgba(0,0,0,0.9)');
+      boxGradient.addColorStop(1, 'rgba(0,0,0,0.7)');
       ctx.fillStyle = boxGradient;
-      ctx.fillRect(30, boxY, size - 60, boxHeight);
+      ctx.fillRect(25, boxY, size - 50, boxHeight);
       
       ctx.strokeStyle = selectedProfession.frameColor;
       ctx.lineWidth = 2;
-      ctx.strokeRect(30, boxY, size - 60, boxHeight);
+      ctx.strokeRect(25, boxY, size - 50, boxHeight);
 
-      // Icono y tagline
-      ctx.font = '28px Arial';
-      ctx.fillText(selectedProfession.icon, size / 2, boxY + 35);
-      
       ctx.fillStyle = selectedProfession.frameColor;
-      ctx.font = '16px Arial';
-      ctx.fillText(selectedProfession.tagline, size / 2, boxY + 60);
+      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(selectedProfession.tagline, size / 2, boxY + 28);
 
-      // Logo CVDP
-      ctx.fillStyle = '#666666';
-      ctx.font = '10px Arial';
-      ctx.fillText('CVDP • Tec de Monterrey Campus SLP • Feria Ocupacional 2025', size / 2, size - 18);
+      ctx.fillStyle = '#888888';
+      ctx.font = '12px Arial, sans-serif';
+      ctx.fillText('Feria Ocupacional 2025', size / 2, boxY + 52);
 
-      // Esquinas decorativas con diseño más elaborado
+      // 8. Esquinas
+      const cornerSize = 25;
       ctx.strokeStyle = selectedProfession.frameColor;
-      ctx.lineWidth = 3;
-      
-      const cornerSize = 35;
-      // Superior izquierda
+      ctx.lineWidth = 4;
+
       ctx.beginPath();
-      ctx.moveTo(12, cornerSize + 12);
-      ctx.lineTo(12, 12);
-      ctx.lineTo(cornerSize + 12, 12);
+      ctx.moveTo(8, 8 + cornerSize);
+      ctx.lineTo(8, 8);
+      ctx.lineTo(8 + cornerSize, 8);
       ctx.stroke();
+
       ctx.beginPath();
-      ctx.arc(12, 12, 4, 0, Math.PI * 2);
-      ctx.fillStyle = selectedProfession.frameColor;
-      ctx.fill();
-      
-      // Superior derecha
-      ctx.beginPath();
-      ctx.moveTo(size - cornerSize - 12, 12);
-      ctx.lineTo(size - 12, 12);
-      ctx.lineTo(size - 12, cornerSize + 12);
+      ctx.moveTo(size - 8 - cornerSize, 8);
+      ctx.lineTo(size - 8, 8);
+      ctx.lineTo(size - 8, 8 + cornerSize);
       ctx.stroke();
+
       ctx.beginPath();
-      ctx.arc(size - 12, 12, 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Inferior izquierda
-      ctx.beginPath();
-      ctx.moveTo(12, size - cornerSize - 12);
-      ctx.lineTo(12, size - 12);
-      ctx.lineTo(cornerSize + 12, size - 12);
+      ctx.moveTo(8, size - 8 - cornerSize);
+      ctx.lineTo(8, size - 8);
+      ctx.lineTo(8 + cornerSize, size - 8);
       ctx.stroke();
+
       ctx.beginPath();
-      ctx.arc(12, size - 12, 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Inferior derecha
-      ctx.beginPath();
-      ctx.moveTo(size - cornerSize - 12, size - 12);
-      ctx.lineTo(size - 12, size - 12);
-      ctx.lineTo(size - 12, size - cornerSize - 12);
+      ctx.moveTo(size - 8 - cornerSize, size - 8);
+      ctx.lineTo(size - 8, size - 8);
+      ctx.lineTo(size - 8, size - 8 - cornerSize);
       ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(size - 12, size - 12, 4, 0, Math.PI * 2);
-      ctx.fill();
 
       // Descargar
       const link = document.createElement('a');
-      link.download = `futuro-${selectedProfession.id}-cvdp-2025.png`;
+      link.download = `mi-futuro-${selectedProfession.id}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-    };
-
-    img.src = uploadedImage;
+    } catch (error) {
+      console.error('Error generating image:', error);
+      alert('Error al generar la imagen. Por favor intenta de nuevo.');
+    }
   };
 
   const resetAll = () => {
     setStep('upload');
     setUploadedImage(null);
     setSelectedProfession(null);
+    setBgImageLoaded(null);
   };
 
   return (
@@ -831,7 +342,7 @@ export default function ResultsPage() {
             <span className="text-white">MARCO</span>{' '}
             <span className="text-neon-magenta">PROFESIONAL</span>
           </h1>
-          <p className="text-gray-400 mt-2">Sube tu foto y obtén un marco personalizado de tu futura carrera</p>
+          <p className="text-gray-400 mt-2">Sube tu foto y obtén un marco de tu futura carrera</p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -841,20 +352,21 @@ export default function ResultsPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="card-neon rounded-2xl p-12 cursor-pointer hover:border-neon-cyan/50 transition-all group"
               >
-                <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 2, repeat: Infinity }} className="text-7xl mb-6">
-                  📷
-                </motion.div>
+                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-neon-cyan/20 to-neon-magenta/20 flex items-center justify-center border-2 border-dashed border-gray-600 group-hover:border-neon-cyan transition-colors">
+                  <svg className="w-10 h-10 text-gray-400 group-hover:text-neon-cyan transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </div>
                 <h3 className="font-display text-2xl font-bold text-white mb-2 group-hover:text-neon-cyan transition-colors">
-                  Sube tu selfie
+                  Sube tu foto
                 </h3>
-                <p className="text-gray-400 mb-6">Toca aquí para seleccionar una foto de tu galería</p>
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-neon-cyan/10 rounded-xl text-neon-cyan text-sm">
-                  <span>📱</span>
-                  <span>Seleccionar imagen</span>
+                <p className="text-gray-400 mb-6">Toca aquí para seleccionar una imagen</p>
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-neon-cyan/10 rounded-xl text-neon-cyan text-sm font-medium">
+                  Seleccionar imagen
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
               </div>
-              <p className="text-gray-500 text-sm mt-4">💡 Tip: Usa una foto donde se vea bien tu cara</p>
+              <p className="text-gray-500 text-sm mt-4">Tip: Usa una foto donde se vea bien tu cara</p>
             </motion.div>
           )}
 
@@ -863,13 +375,13 @@ export default function ResultsPage() {
               <div className="flex justify-center mb-6">
                 <div className="relative">
                   <img src={uploadedImage} alt="Tu foto" className="w-24 h-24 rounded-full object-cover border-4 border-neon-cyan" />
-                  <button onClick={resetAll} className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm hover:bg-red-600">
+                  <button onClick={resetAll} className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm hover:bg-red-600 transition-colors">
                     ✕
                   </button>
                 </div>
               </div>
-              <h3 className="font-display text-xl font-bold text-white text-center mb-2">¿Cuál será tu carrera? 🎯</h3>
-              <p className="text-gray-400 text-center mb-6 text-sm">Cada marco tiene elementos únicos de la profesión</p>
+              <h3 className="font-display text-xl font-bold text-white text-center mb-2">¿Cuál será tu carrera?</h3>
+              <p className="text-gray-400 text-center mb-6 text-sm">Cada marco tiene una imagen de fondo profesional</p>
               
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
                 {professions.map((profession) => (
@@ -878,20 +390,31 @@ export default function ResultsPage() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setSelectedProfession(profession)}
-                    className={`card-neon rounded-xl p-3 text-center transition-all ${
+                    className={`rounded-xl p-3 text-center transition-all overflow-hidden relative h-24 ${
                       selectedProfession?.id === profession.id 
                         ? 'ring-2' 
-                        : 'hover:border-neon-cyan/30'
+                        : 'ring-1 ring-gray-700 hover:ring-gray-500'
                     }`}
                     style={{
-                      borderColor: selectedProfession?.id === profession.id ? profession.frameColor : undefined,
                       ringColor: selectedProfession?.id === profession.id ? profession.frameColor : undefined,
-                      backgroundColor: selectedProfession?.id === profession.id ? profession.frameColor + '15' : undefined
                     }}
                   >
-                    <span className="text-2xl block mb-1">{profession.emoji}</span>
-                    <span className="text-xs font-medium block">{profession.name}</span>
-                    <span className="text-[10px] text-gray-500 block mt-1">{profession.icon}</span>
+                    <div 
+                      className="absolute inset-0 opacity-40"
+                      style={{
+                        backgroundImage: `url(${profession.bgImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-black/60" />
+                    <div className="relative z-10 h-full flex flex-col justify-center">
+                      <div 
+                        className="w-2 h-2 rounded-full mx-auto mb-2"
+                        style={{ backgroundColor: profession.frameColor }}
+                      />
+                      <span className="text-xs font-medium text-white leading-tight">{profession.name}</span>
+                    </div>
                   </motion.button>
                 ))}
               </div>
@@ -900,11 +423,21 @@ export default function ResultsPage() {
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-center mb-4 p-3 rounded-lg"
-                  style={{ backgroundColor: selectedProfession.frameColor + '10', border: `1px solid ${selectedProfession.frameColor}30` }}
+                  className="text-center mb-4 rounded-xl overflow-hidden relative h-28"
                 >
-                  <span className="text-2xl">{selectedProfession.emoji}</span>
-                  <p className="text-sm mt-1" style={{ color: selectedProfession.frameColor }}>{selectedProfession.tagline}</p>
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${selectedProfession.bgImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/70" />
+                  <div className="relative z-10 h-full flex flex-col justify-center">
+                    <p className="font-bold text-xl text-white">{selectedProfession.name}</p>
+                    <p className="text-sm mt-2" style={{ color: selectedProfession.frameColor }}>{selectedProfession.tagline}</p>
+                  </div>
                 </motion.div>
               )}
               
@@ -917,7 +450,7 @@ export default function ResultsPage() {
                   selectedProfession ? 'bg-gradient-to-r from-neon-magenta to-neon-cyan text-arena-dark cursor-pointer' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                {selectedProfession ? '🖼️ CREAR MI MARCO' : 'Selecciona una carrera'}
+                {selectedProfession ? 'CREAR MI MARCO' : 'Selecciona una carrera'}
               </motion.button>
             </motion.div>
           )}
@@ -926,102 +459,75 @@ export default function ResultsPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-12">
               <motion.div 
                 animate={{ rotate: 360 }} 
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} 
-                className="text-8xl mb-8 inline-block"
-              >
-                {selectedProfession?.emoji || '🖼️'}
-              </motion.div>
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }} 
+                className="w-20 h-20 mx-auto mb-8 rounded-full border-4 border-t-transparent"
+                style={{ borderColor: selectedProfession?.frameColor, borderTopColor: 'transparent' }}
+              />
               <h3 className="font-display text-2xl font-bold text-white mb-4">
-                Creando tu marco de {selectedProfession?.name}...
+                Creando tu marco...
               </h3>
-              <div className="max-w-xs mx-auto h-2 bg-arena-card rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full"
-                  style={{ background: `linear-gradient(to right, ${selectedProfession?.frameColor}, ${selectedProfession?.secondaryColor})` }}
-                  initial={{ width: "0%" }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 1, ease: "easeInOut" }}
-                />
-              </div>
+              <p className="text-gray-400">{selectedProfession?.name}</p>
             </motion.div>
           )}
 
           {step === 'result' && (
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-              <div className="text-4xl mb-4">🎉</div>
               <h2 className="font-display text-2xl font-bold text-white mb-2">¡Tu marco está listo!</h2>
               <p className="text-gray-400 mb-6">Futuro/a {selectedProfession?.name}</p>
               
-              {/* Preview del marco */}
-              <div className="card-neon rounded-2xl p-4 mb-6 overflow-hidden max-w-md mx-auto">
-                <div 
-                  className="relative rounded-xl p-4"
-                  style={{ 
-                    border: `3px solid ${selectedProfession?.frameColor}`,
-                    background: `linear-gradient(135deg, ${selectedProfession?.frameColor}10 0%, #0a0a0f 50%, ${selectedProfession?.secondaryColor}10 100%)`
-                  }}
-                >
-                  {/* Header */}
+              {/* Preview */}
+              <div className="rounded-2xl p-2 mb-6 overflow-hidden max-w-sm mx-auto border-2" style={{ borderColor: selectedProfession?.frameColor }}>
+                <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: '1/1' }}>
                   <div 
-                    className="rounded-lg p-2 mb-4 text-center"
-                    style={{ 
-                      background: `linear-gradient(to right, ${selectedProfession?.frameColor}30, ${selectedProfession?.frameColor}50, ${selectedProfession?.frameColor}30)`,
-                      border: `1px solid ${selectedProfession?.frameColor}50`
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${selectedProfession?.bgImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                     }}
-                  >
-                    <span className="text-white font-bold text-sm">FUTURO/A {selectedProfession?.name.toUpperCase()}</span>
-                  </div>
+                  />
+                  <div className="absolute inset-0 bg-black/65" />
                   
-                  {/* Foto circular */}
-                  <div className="relative mx-auto w-40 h-40 mb-4">
+                  <div className="relative z-10 h-full flex flex-col items-center justify-center p-4">
                     <div 
-                      className="absolute inset-[-6px] rounded-full"
-                      style={{ 
-                        border: `3px solid ${selectedProfession?.frameColor}`,
-                        boxShadow: `0 0 30px ${selectedProfession?.frameColor}40`
-                      }}
-                    />
-                    <img 
-                      src={uploadedImage} 
-                      alt="Tu foto" 
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                    <span className="absolute bottom-0 right-0 text-3xl">{selectedProfession?.emoji}</span>
-                  </div>
-                  
-                  {/* Tagline */}
-                  <div 
-                    className="bg-black/80 rounded-lg p-3 border text-center"
-                    style={{ borderColor: selectedProfession?.frameColor + '50' }}
-                  >
-                    <span className="text-xl">{selectedProfession?.icon}</span>
-                    <p 
-                      className="text-sm mt-1"
-                      style={{ color: selectedProfession?.frameColor }}
+                      className="bg-black/80 rounded-lg px-4 py-2 mb-4 border"
+                      style={{ borderColor: selectedProfession?.frameColor }}
                     >
-                      {selectedProfession?.tagline}
-                    </p>
+                      <span className="text-white font-bold text-sm">FUTURO/A {selectedProfession?.name.toUpperCase()}</span>
+                    </div>
+                    
+                    <div 
+                      className="w-36 h-36 rounded-full overflow-hidden mb-4"
+                      style={{ 
+                        border: `4px solid ${selectedProfession?.frameColor}`,
+                        boxShadow: `0 0 30px ${selectedProfession?.frameColor}50`
+                      }}
+                    >
+                      <img src={uploadedImage} alt="Tu foto" className="w-full h-full object-cover" />
+                    </div>
+                    
+                    <div className="bg-black/80 rounded-lg px-4 py-2 border" style={{ borderColor: selectedProfession?.frameColor }}>
+                      <p className="text-sm font-medium" style={{ color: selectedProfession?.frameColor }}>
+                        {selectedProfession?.tagline}
+                      </p>
+                    </div>
                   </div>
-                  
-                  {/* Logo */}
-                  <p className="text-gray-600 text-[10px] mt-3">CVDP • Tec de Monterrey SLP • 2025</p>
                 </div>
               </div>
               
-              <div className="space-y-3 max-w-md mx-auto">
+              <div className="space-y-3 max-w-sm mx-auto">
                 <motion.button 
                   whileHover={{ scale: 1.02 }} 
                   whileTap={{ scale: 0.98 }} 
                   onClick={downloadImage} 
-                  className="w-full py-4 rounded-xl font-display font-bold text-lg text-arena-dark"
-                  style={{ background: `linear-gradient(to right, ${selectedProfession?.frameColor}, ${selectedProfession?.secondaryColor})` }}
+                  className="w-full py-4 rounded-xl font-display font-bold text-lg text-white"
+                  style={{ backgroundColor: selectedProfession?.frameColor }}
                 >
-                  📥 DESCARGAR IMAGEN
+                  DESCARGAR IMAGEN
                 </motion.button>
                 <button onClick={resetAll} className="w-full py-3 text-gray-400 hover:text-white transition-colors">
-                  🔄 Crear otro marco
+                  Crear otro marco
                 </button>
-                <Link href="/recursos"><button className="w-full py-3 text-neon-cyan hover:underline">📚 Ver recursos de carreras →</button></Link>
               </div>
             </motion.div>
           )}
